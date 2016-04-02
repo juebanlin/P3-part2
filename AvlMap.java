@@ -9,17 +9,38 @@ import java.util.Map;
 public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K,V> 
     implements MapJHU<K, V>, Iterable<Map.Entry<K, V>> {
 
-        private class AvlNode extends BNode { //Bnode is private cannot be accessed. 
+    private class AvlNode extends BNode {
+        private int height = 0; 
+
+        AvlNode(K k, V v) {
+            BNode(k, v);
+            this.height = 0;
         }
+        public void setHeight(int h) {
+            this.height = h;
+        }
+        public int getHeight() {
+            return this.height;
+        }        
+
+    } //end inner class 
 
     private BSTMap<K, V> avlTree;
-    private BNode root;  //cannot access private inner class
+    private BNode root;  
 
     public AvlMap() {
         avlTree = new BSTMap<K,V> ();
 
     }
 
+    // A utility function to get height of the tree
+    public int height(BNode n) {
+        if (n == null) {
+            return 0;
+        }
+        return n.height;
+    }
+    
     /**
     * Insert into the tree; duplicates are ignored.
     * @param x the item to insert.
@@ -28,14 +49,43 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K,V>
         this.root = insert(n,this.root);
     }
 
-/*
-    private AvlNode insert (AvlNode n, AvlNode r) {
+    public void insert(K key, V val, BNode curr) {
+        BSTMap.put(key, val, curr);  //
+
+    }
+
+    private BNode insert (BNode n, BNode t) {
         if (n == null) {
             throw new java.lang.NullPointerException(); 
         } 
+        int diff = t.key.compareTo(n.key);
+
+        if (diff > 0) { //look left
+            t.left = insert(n, t.left); 
+            if (height (t.left) - height(t.right) == 2) {
+                if (t.key.compareTo(t.left.key) < 0) {
+
+                }
+            }
+        }
+
+            if (diff > 0) {  // look left
+                //key not exists in current tree, add new node
+                if (this.left == null) { 
+                    this.left = new BNode(k, val); 
+                    return null;
+                } else {
+                    this.left.insert(k, val);
+                }
+            }
+
+
+
     }
 
-   */ 
+
+
+
 
         /**
          * Internal method to insert into a subtree.
@@ -43,7 +93,7 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K,V>
          * @param t the node that roots the tree.
          * @return the new root.
          */
-    /*
+
         private AvlNode insert( Comparable x, AvlNode t )
         {
             if( t == null )
@@ -71,5 +121,4 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K,V>
             t.height = max( height( t.left ), height( t.right ) ) + 1;
             return t;
         }
-    */
 }
