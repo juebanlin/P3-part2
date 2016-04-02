@@ -6,15 +6,15 @@
 
 import java.util.Map;
 
-public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K,V> 
-    implements MapJHU<K, V>, Iterable<Map.Entry<K, V>> {
+public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K,V>  {
 
+    /*
     private class AvlNode extends BNode {
         private int height = 0; 
 
         AvlNode(K k, V v) {
-            BNode(k, v);
-            this.height = 0;
+            super(k, v);
+            this.height = 1;
         }
         public void setHeight(int h) {
             this.height = h;
@@ -24,7 +24,7 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K,V>
         }        
 
     } //end inner class 
-
+*/
     private BSTMap<K, V> avlTree;
     private BNode root;  
 
@@ -33,92 +33,180 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K,V>
 
     }
 
-    // A utility function to get height of the tree
-    public int height(BNode n) {
+    /** 
+    * Get the height of the tree.
+    * @param n the root of the subtree
+    * @return the height of the tree
+    */
+    public int height() {
+        return height(this.root);
+    }
+
+    private int height(BNode n) {
         if (n == null) {
-            return 0;
+            throw new java.lang.NullPointerException(); 
         }
         return n.height;
     }
-    
+
+    /**
+    * Get maxium of of two integers. 
+    */
+    public int max(int a, int b) {
+        if (a > b) {
+            return a;
+        } else {
+            return b;
+        }
+    }
+
+    /**
+    * Get Balance factor of node n
+    */
+    public int getBalance(BNode n) {
+        if (n == null || n.key == null) {
+            throw new java.lang.NullPointerException();
+        } 
+        return height(n.left) - height(n.right);
+    }
+
+    /**
+    * Perform right rotation.
+    * @param r the root of the subtree
+    */ 
+    // y <--> r;   x <--> n;
+    // A utility function to right rotate subtree rooted with y
+    // See the diagram given above.
+    public BNode rightRotate(BNode r) {
+        //BNode n= r.left;
+        //BNode temp = n.right;
+
+        BNode n= r.left;
+        BNode temp = n.right;
+ 
+        // Perform rotation
+        n.right = r;
+        r.left = temp;
+ 
+        // Update heights
+        r.height = max(height(r.left), height(r.right)) + 1;
+        n.height = max(height(n.left), height(n.right)) + 1;
+ 
+        // Return new root
+        return n;
+    }
+
+    /**
+    * Perform left rotation.
+    * @param r the root of the subtree
+    */ 
+    // x <--> r;   y <--> n;
+    // A utility function to left rotate subtree rooted with x
+    // See the diagram given above.
+    public BNode leftRotate(BNode r) {
+        BNode n = r.right;
+        BNode temp = n.left;
+ 
+        // Perform rotation
+        n.left = r;
+        r.right = temp;
+ 
+        //  Update heights
+        n.height = max(height(r.left), height(r.right)) + 1;
+        n.height = max(height(n.left), height(n.right)) + 1;
+ 
+        // Return new root
+        return n;
+    }
+
     /**
     * Insert into the tree; duplicates are ignored.
     * @param x the item to insert.
     */
-    public void insert(BNode n) {
-        this.root = insert(n,this.root);
+    public V insert(BNode n) {
+         return this.insert(n.key, n.value, this.root);
+    }
+      // node <--> curr
+    public V insert(K key, V val, BNode curr) {
+        //call BST insert
+        V tempVal = this.put(key, val, curr); 
+        //update height of this ancestor node 
+        curr.height = max(height(curr.left), height(curr.right)) + 1;
+
+        // Get balance
+        int balance = getBalance(curr);
+        // balance > 1 (left heavy)
+        // balance < -1 (right heavy)
+
+        // If unbalanced, check 4 cases
+        // Left Left Case
+        if (balance > 1 && key.compareTo(curr.left.key) < 0) {
+            return this.rightRotate(curr).value;
+        }
+ 
+        // Right Right Case
+        if (balance < -1 && key.compareTo(curr.right.key) > 0) {
+            return this.leftRotate(curr).value;
+        }
+ 
+        // Left Right Case
+        if (balance > 1 && key.compareTo(curr.left.key) > 0) {
+            curr.left = leftRotate(curr.left);
+            return this.rightRotate(curr).value;
+        }
+ 
+        // Right Left Case
+        if (balance < -1 && key.compareTo(curr.right.key) < 0 ) {
+            curr.right = rightRotate(curr.right);
+            return this.leftRotate(curr).value;
+        }
+        return tempVal;
     }
 
-    public void insert(K key, V val, BNode curr) {
-        BSTMap.put(key, val, curr);  //
-
-    }
-
-    private BNode insert (BNode n, BNode t) {
-        if (n == null) {
-            throw new java.lang.NullPointerException(); 
-        } 
-        int diff = t.key.compareTo(n.key);
-
-        if (diff > 0) { //look left
-            t.left = insert(n, t.left); 
-            if (height (t.left) - height(t.right) == 2) {
-                if (t.key.compareTo(t.left.key) < 0) {
-
-                }
-            }
+    public V delete(K key, BNode curr) {
+        // Check if given key or root is null
+        if (curr == null || key == null) {
+            throw new java.lang.NullPointerException();
         }
 
-            if (diff > 0) {  // look left
-                //key not exists in current tree, add new node
-                if (this.left == null) { 
-                    this.left = new BNode(k, val); 
-                    return null;
-                } else {
-                    this.left.insert(k, val);
-                }
-            }
+        // Remove node and store value
+        V tempVal = this.remove(key, curr);
 
+        // Return null if key not found
+        if (tempVal == null) {
+            return null;
+        }
 
+        // Get new height of node
+        curr.height = max(height(curr.left), height(curr.right));
 
+        // Get balance factor of node
+        int balance = getBalance(curr);
+
+        //Left Left Case
+        if (balance > 1 && getBalance(curr.left) >= 0) {
+            return rightRotate(curr).value;
+        }
+
+        // Left Right Case
+        if (balance > 1 && getBalance(curr.left) < 0) {
+            curr.left = leftRotate(curr.left);
+            return rightRotate(curr).value;
+        }
+ 
+        // Right Right Case
+        if (balance < -1 && getBalance(curr.right) <= 0) {
+            return leftRotate(curr).value;
+        }
+ 
+        // Right Left Case
+        if (balance < -1 && getBalance(curr.right) > 0) {
+            curr.right = rightRotate(curr.right);
+            return leftRotate(curr).value;
+        }
+
+        // If tree is still balanced
+        return curr.value;
     }
 
-
-
-
-
-        /**
-         * Internal method to insert into a subtree.
-         * @param x the item to insert.
-         * @param t the node that roots the tree.
-         * @return the new root.
-         */
-
-        private AvlNode insert( Comparable x, AvlNode t )
-        {
-            if( t == null )
-                t = new AvlNode( x, null, null );
-            else if( x.compareTo( t.element ) < 0 )
-            {
-                t.left = insert( x, t.left );
-                if( height( t.left ) - height( t.right ) == 2 )
-                    if( x.compareTo( t.left.element ) < 0 )
-                        t = rotateWithLeftChild( t );
-                    else
-                        t = doubleWithLeftChild( t );
-            }
-            else if( x.compareTo( t.element ) > 0 )
-            {
-                t.right = insert( x, t.right );
-                if( height( t.right ) - height( t.left ) == 2 )
-                    if( x.compareTo( t.right.element ) > 0 )
-                        t = rotateWithRightChild( t );
-                    else
-                        t = doubleWithRightChild( t );
-            }
-            else
-                ;  // Duplicate; do nothing
-            t.height = max( height( t.left ), height( t.right ) ) + 1;
-            return t;
-        }
 }

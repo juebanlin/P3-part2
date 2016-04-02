@@ -28,13 +28,15 @@ public class BSTMap<K extends Comparable<? super K>, V>
     protected class BNode implements Map.Entry<K, V> {
 
         /** The key of the entry (null if sentinel node). */
-        private K key;
+        protected K key;
         /** The value of the entry (null if sentinel node). */
-        private V value;
+        protected V value;
         /** The left child of this node. */
-        private BNode left;
+        protected BNode left;
         /** The right child of this node. */
-        private BNode right;
+        protected BNode right;
+
+        protected int height; 
 
         /** Create a new node with a particular key and value.
          *  @param k the key for the new node
@@ -45,6 +47,7 @@ public class BSTMap<K extends Comparable<? super K>, V>
             this.value = v;
             this.left = null;
             this.right = null;
+            this.height = 1;
         }
 
         /** Check whether this node is a leaf sentinel, based on key.
@@ -53,6 +56,14 @@ public class BSTMap<K extends Comparable<? super K>, V>
         public boolean isLeaf() {
             return this.key == null;  // this is a sentinel-based implementation
         }
+
+
+        public void setHeight(int h) {
+            this.height = h;
+        }
+        public int getHeight() {
+            return this.height;
+        }      
 
         /** Dummy setValue method.
          *  @param val Value.
