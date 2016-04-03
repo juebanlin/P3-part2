@@ -1,4 +1,9 @@
-<<<<<<< HEAD
+//AVLMap.java
+//Yu-chi Chang, Allan Wang
+//ychang64, awang53
+//EN.600.226.01/02
+//P3
+
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Set;
@@ -10,21 +15,12 @@ import java.util.HashSet;
 import java.util.ArrayList;
 
 
-public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K,V>  {
-=======
-//AVLMap.java
-//Yu-chi Chang, Allan Wang
-//ychang64, awang53
-//EN.600.226.01/02
-//P3
-
 /**
  *  AVL Map class.
  *  @param <K> key
  *  @param <V> value
  */
 public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V>  {
->>>>>>> 4c09e0deeaf31ccbd48d08744b25a1ddf37dc9af
 
     /*
     private class AvlNode extends BNode {
@@ -44,25 +40,16 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V>  {
     } //end inner class 
 
 */
-<<<<<<< HEAD
 
-    private BSTMap<K, V> avlTree;
-    //private BNode root;  
-=======
     /** AvlTree variable. */
     private BSTMap<K, V> avlTree;
     /** Root node. */
     private BNode root;  
->>>>>>> 4c09e0deeaf31ccbd48d08744b25a1ddf37dc9af
 
     /** AvlTree constructor. */
     public AvlMap() {
-<<<<<<< HEAD
         avlTree = new BSTMap<K,V> ();
-=======
         this.avlTree = new BSTMap<K, V>();
-
->>>>>>> 4c09e0deeaf31ccbd48d08744b25a1ddf37dc9af
     }
 
     /** 
@@ -162,7 +149,6 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V>  {
     * @param n the node to insert.
     * @return value of inserted node
     */
-<<<<<<< HEAD
     public BNode insert(K key, V val) {
          return this.insert(key, val, this.root);
     }
@@ -195,9 +181,33 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V>  {
         // Get balance
         int balance = getBalance(curr);
         System.out.println("balance" + balance);
-=======
+         // If unbalanced, check 4 cases
+        // Left Left Case
+        if (balance > 1 && key.compareTo(curr.left.key) < 0) {
+            return this.rightRotate(curr);
+        }
+ 
+        // Right Right Case
+        if (balance < -1 && key.compareTo(curr.right.key) > 0) {
+            return this.leftRotate(curr);
+        }
+ 
+        // Left Right Case
+        if (balance > 1 && key.compareTo(curr.left.key) > 0) {
+            curr.left = leftRotate(curr.left);
+            return this.rightRotate(curr);
+        }
+ 
+        // Right Left Case
+        if (balance < -1 && key.compareTo(curr.right.key) < 0) {
+            curr.right = this.rightRotate(curr.right);
+            return this.leftRotate(curr);
+        }
+        return temp;
+    }
+
     public V insert(BNode n) {
-        return this.insert(n.key, n.value, this.root);
+        return this.insert(n.key, n.value, this.root).value;
     }
       
     /**
@@ -207,7 +217,7 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V>  {
     * @param curr the root of the subtree
     * @return value of inserted node
     */
-    public V insert(K key, V val, BNode curr) {
+    /*public V insert(K key, V val, BNode curr) {
         //call BST put
         V tempVal = this.put(key, val, curr); 
         
@@ -217,7 +227,6 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V>  {
 
         // Get balance
         int balance = this.getBalance(curr);
->>>>>>> 4c09e0deeaf31ccbd48d08744b25a1ddf37dc9af
         // balance > 1 (left heavy)
         // balance < -1 (right heavy)
 
@@ -234,7 +243,6 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V>  {
  
         // Left Right Case
         if (balance > 1 && key.compareTo(curr.left.key) > 0) {
-<<<<<<< HEAD
             curr.left = leftRotate(curr.left);
             return this.rightRotate(curr);
         }
@@ -243,7 +251,6 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V>  {
         if (balance < -1 && key.compareTo(curr.right.key) < 0 ) {
             curr.right = rightRotate(curr.right);
             return this.leftRotate(curr);
-=======
             curr.left = this.leftRotate(curr.left);
             return this.rightRotate(curr).value;
         }
@@ -252,10 +259,9 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V>  {
         if (balance < -1 && key.compareTo(curr.right.key) < 0) {
             curr.right = this.rightRotate(curr.right);
             return this.leftRotate(curr).value;
->>>>>>> 4c09e0deeaf31ccbd48d08744b25a1ddf37dc9af
         }
         return temp;
-    }
+    }*/
 
     /**
     * Delete node from the subtree.
@@ -291,7 +297,7 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V>  {
  
         // Right Left Case
         if (balance < -1 && this.getBalance(curr.right) > 0) {
-            curr.right = rthis.ightRotate(curr.right);
+            curr.right = this.rightRotate(curr.right);
             return this.leftRotate(curr).value;
         }
 
@@ -330,9 +336,4 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V>  {
         }
         return set;
     }
-
-
-
-
-
 }

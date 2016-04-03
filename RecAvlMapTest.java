@@ -17,7 +17,7 @@ import java.util.AbstractMap;
 import java.util.Set;
 import java.util.Collection;
 
-public class AvlMapTest {
+public class RecAvlMapTest {
 
 
 

@@ -4,8 +4,6 @@
 //EN.600.226.01/02
 //P3
 
-<<<<<<< HEAD
-
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Set;
@@ -13,8 +11,6 @@ import java.util.Map;
 
 
 
-=======
->>>>>>> 4c09e0deeaf31ccbd48d08744b25a1ddf37dc9af
 /**
  *  AVL Map class.
  *  @param <K> key
@@ -47,13 +43,11 @@ public class RecAvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V> 
 */
     /** AvlTree variable. */
     private BSTMap<K, V> avlTree;
-    /** Root node. */
-    private BNode root;  
 
     /** AvlTree constructor. */
     public RecAvlMap() {
-        this.avlTree = new BSTMap<K, V>();
-
+        this.root = new BNode(null, null);
+        this.size = 0;
     }
 
     /** 
@@ -70,9 +64,6 @@ public class RecAvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V> 
     * @return the height of the tree
     */
     private int height(BNode n) {
-        if (n == null) {
-            throw new java.lang.NullPointerException(); 
-        }
         return n.height;
     }
 
@@ -96,9 +87,6 @@ public class RecAvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V> 
     * @return balance of node
     */
     public int getBalance(BNode n) {
-        if (n == null || n.key == null) {
-            throw new java.lang.NullPointerException();
-        } 
         return this.height(n.left) - this.height(n.right);
     }
 
@@ -141,7 +129,7 @@ public class RecAvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V> 
         r.right = temp;
  
         //  Update heights
-        n.height = this.max(this.height(r.left), this.height(r.right)) + 1;
+        r.height = this.max(this.height(r.left), this.height(r.right)) + 1;
         n.height = this.max(this.height(n.left), this.height(n.right)) + 1;
  
         // Return new root
@@ -157,14 +145,11 @@ public class RecAvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V> 
         return this.insert(n.key, n.value, this.root);
     }
 
-<<<<<<< HEAD
     public V insert(K key, V val) {
         return this.insert(key, val, this.root);
     }
 
 
-=======
->>>>>>> 4c09e0deeaf31ccbd48d08744b25a1ddf37dc9af
     /**
     * Recursively insert into the subtree.
     * @param key the key to insert.
@@ -174,8 +159,15 @@ public class RecAvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V> 
     */
     private BNode recInsert(K key, V val, BNode curr) {
         BNode n = new BNode(key, val);
-        if (key == null || val == null || curr == null) {
+        if (key == null) {
             throw new NullPointerException();
+        }
+        if (curr == null) {
+            curr = new BNode(key, val);
+        } else if (curr.key == null) {
+            this.root = new BNode(key, val);
+            this.size++;
+            return null;
         } else if (key.compareTo(curr.left.key) < 0) {
             curr.left = this.recInsert(key, val, curr.left);
             if (this.getBalance(curr) == 2) {
@@ -199,6 +191,7 @@ public class RecAvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V> 
                 curr.height = this.max(this.height(curr.left), this.height(curr.right)) + 1;
             }
         }
+        this.size++;
         return curr;
     }
 
@@ -295,10 +288,6 @@ public class RecAvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V> 
         return this.recDelete(key, curr).value;
     }
 
-<<<<<<< HEAD
-
-
-
     public Collection<K> preOrder() {
         return this.preOrder(this.root);
     }
@@ -329,10 +318,4 @@ public class RecAvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V> 
         }
         return set;
     }
-
-
-
-
-=======
->>>>>>> 4c09e0deeaf31ccbd48d08744b25a1ddf37dc9af
 }
