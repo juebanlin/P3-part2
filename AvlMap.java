@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Set;
@@ -10,6 +11,20 @@ import java.util.ArrayList;
 
 
 public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K,V>  {
+=======
+//AVLMap.java
+//Yu-chi Chang, Allan Wang
+//ychang64, awang53
+//EN.600.226.01/02
+//P3
+
+/**
+ *  AVL Map class.
+ *  @param <K> key
+ *  @param <V> value
+ */
+public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V>  {
+>>>>>>> 4c09e0deeaf31ccbd48d08744b25a1ddf37dc9af
 
     /*
     private class AvlNode extends BNode {
@@ -29,12 +44,33 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K,V>  {
     } //end inner class 
 
 */
+<<<<<<< HEAD
 
     private BSTMap<K, V> avlTree;
     //private BNode root;  
+=======
+    /** AvlTree variable. */
+    private BSTMap<K, V> avlTree;
+    /** Root node. */
+    private BNode root;  
+>>>>>>> 4c09e0deeaf31ccbd48d08744b25a1ddf37dc9af
 
+    /** AvlTree constructor. */
     public AvlMap() {
+<<<<<<< HEAD
         avlTree = new BSTMap<K,V> ();
+=======
+        this.avlTree = new BSTMap<K, V>();
+
+>>>>>>> 4c09e0deeaf31ccbd48d08744b25a1ddf37dc9af
+    }
+
+    /** 
+    * Get the height of the tree.
+    * @return the height of the tree
+    */
+    public int height() {
+        return this.height(this.root);
     }
 
     /** 
@@ -42,10 +78,6 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K,V>  {
     * @param n the root of the subtree
     * @return the height of the tree
     */
-    public int height() {
-        return height(this.root);
-    }
-
     private int height(BNode n) {
         if (n == null) {
             return 0;
@@ -54,7 +86,10 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K,V>  {
     }
 
     /**
-    * Get maxium of of two integers. 
+    * Get maximum of of two integers. 
+    * @param a first integer argument
+    * @param b second integer argument
+    * @return maximum of two integers
     */
     public int max(int a, int b) {
         if (a > b) {
@@ -65,27 +100,26 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K,V>  {
     }
 
     /**
-    * Get Balance factor of node n
+    * Get balance factor of node n.
+    * @param n given node
+    * @return balance of node
     */
     public int getBalance(BNode n) {
         if (n == null || n.key == null) {
             throw new java.lang.NullPointerException();
         } 
-        return height(n.left) - height(n.right);
+        return this.height(n.left) - this.height(n.right);
     }
 
     /**
     * Perform right rotation.
     * @param r the root of the subtree
+    * @return rotated node
     */ 
     // y <--> r;   x <--> n;
-    // A utility function to right rotate subtree rooted with y
-    // See the diagram given above.
     public BNode rightRotate(BNode r) {
-        //BNode n= r.left;
-        //BNode temp = n.right;
-
-        BNode n= r.left;
+        // Save children
+        BNode n = r.left;
         BNode temp = n.right;
  
         // Perform rotation
@@ -93,8 +127,8 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K,V>  {
         r.left = temp;
  
         // Update heights
-        r.height = max(height(r.left), height(r.right)) + 1;
-        n.height = max(height(n.left), height(n.right)) + 1;
+        r.height = this.max(this.height(r.left), this.height(r.right)) + 1;
+        n.height = this.max(this.height(n.left), this.height(n.right)) + 1;
  
         // Return new root
         return n;
@@ -103,11 +137,11 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K,V>  {
     /**
     * Perform left rotation.
     * @param r the root of the subtree
+    * @return rotated node
     */ 
     // x <--> r;   y <--> n;
-    // A utility function to left rotate subtree rooted with x
-    // See the diagram given above.
     public BNode leftRotate(BNode r) {
+        //Save children
         BNode n = r.right;
         BNode temp = n.left;
  
@@ -116,8 +150,8 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K,V>  {
         r.right = temp;
  
         //  Update heights
-        n.height = max(height(r.left), height(r.right)) + 1;
-        n.height = max(height(n.left), height(n.right)) + 1;
+        n.height = this.max(this.height(r.left), this.height(r.right)) + 1;
+        n.height = this.max(this.height(n.left), this.height(n.right)) + 1;
  
         // Return new root
         return n;
@@ -125,8 +159,10 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K,V>  {
 
     /**
     * Insert into the tree; duplicates are ignored.
-    * @param x the item to insert.
+    * @param n the node to insert.
+    * @return value of inserted node
     */
+<<<<<<< HEAD
     public BNode insert(K key, V val) {
          return this.insert(key, val, this.root);
     }
@@ -159,6 +195,29 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K,V>  {
         // Get balance
         int balance = getBalance(curr);
         System.out.println("balance" + balance);
+=======
+    public V insert(BNode n) {
+        return this.insert(n.key, n.value, this.root);
+    }
+      
+    /**
+    * Insert into the subtree.
+    * @param key the key to insert.
+    * @param val the value to insert
+    * @param curr the root of the subtree
+    * @return value of inserted node
+    */
+    public V insert(K key, V val, BNode curr) {
+        //call BST put
+        V tempVal = this.put(key, val, curr); 
+        
+        //update height of this ancestor node 
+        curr.height = this.max(this.height(curr.left),
+            this.height(curr.right)) + 1;
+
+        // Get balance
+        int balance = this.getBalance(curr);
+>>>>>>> 4c09e0deeaf31ccbd48d08744b25a1ddf37dc9af
         // balance > 1 (left heavy)
         // balance < -1 (right heavy)
 
@@ -175,6 +234,7 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K,V>  {
  
         // Left Right Case
         if (balance > 1 && key.compareTo(curr.left.key) > 0) {
+<<<<<<< HEAD
             curr.left = leftRotate(curr.left);
             return this.rightRotate(curr);
         }
@@ -183,50 +243,56 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K,V>  {
         if (balance < -1 && key.compareTo(curr.right.key) < 0 ) {
             curr.right = rightRotate(curr.right);
             return this.leftRotate(curr);
+=======
+            curr.left = this.leftRotate(curr.left);
+            return this.rightRotate(curr).value;
+        }
+ 
+        // Right Left Case
+        if (balance < -1 && key.compareTo(curr.right.key) < 0) {
+            curr.right = this.rightRotate(curr.right);
+            return this.leftRotate(curr).value;
+>>>>>>> 4c09e0deeaf31ccbd48d08744b25a1ddf37dc9af
         }
         return temp;
     }
 
+    /**
+    * Delete node from the subtree.
+    * @param key the key to delete
+    * @param curr the root of the subtree
+    * @return value of deleted node
+    */
     public V delete(K key, BNode curr) {
-        // Check if given key or root is null
-        if (curr == null || key == null) {
-            throw new java.lang.NullPointerException();
-        }
-
         // Remove node and store value
         V tempVal = this.remove(key, curr);
 
-        // Return null if key not found
-        if (tempVal == null) {
-            return null;
-        }
-
         // Get new height of node
-        curr.height = max(height(curr.left), height(curr.right));
+        curr.height = this.max(this.height(curr.left), this.height(curr.right));
 
         // Get balance factor of node
-        int balance = getBalance(curr);
+        int balance = this.getBalance(curr);
 
         //Left Left Case
-        if (balance > 1 && getBalance(curr.left) >= 0) {
-            return rightRotate(curr).value;
+        if (balance > 1 && this.getBalance(curr.left) >= 0) {
+            return this.rightRotate(curr).value;
         }
 
         // Left Right Case
-        if (balance > 1 && getBalance(curr.left) < 0) {
-            curr.left = leftRotate(curr.left);
-            return rightRotate(curr).value;
+        if (balance > 1 && this.getBalance(curr.left) < 0) {
+            curr.left = this.leftRotate(curr.left);
+            return this.rightRotate(curr).value;
         }
  
         // Right Right Case
-        if (balance < -1 && getBalance(curr.right) <= 0) {
-            return leftRotate(curr).value;
+        if (balance < -1 && this.getBalance(curr.right) <= 0) {
+            return this.leftRotate(curr).value;
         }
  
         // Right Left Case
-        if (balance < -1 && getBalance(curr.right) > 0) {
-            curr.right = rightRotate(curr.right);
-            return leftRotate(curr).value;
+        if (balance < -1 && this.getBalance(curr.right) > 0) {
+            curr.right = rthis.ightRotate(curr.right);
+            return this.leftRotate(curr).value;
         }
 
         // If tree is still balanced

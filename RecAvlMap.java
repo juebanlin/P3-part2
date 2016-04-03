@@ -4,6 +4,7 @@
 //EN.600.226.01/02
 //P3
 
+<<<<<<< HEAD
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -12,6 +13,8 @@ import java.util.Map;
 
 
 
+=======
+>>>>>>> 4c09e0deeaf31ccbd48d08744b25a1ddf37dc9af
 /**
  *  AVL Map class.
  *  @param <K> key
@@ -22,6 +25,10 @@ public class RecAvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V> 
     /*
     private class AvlNode extends BNode {
         private int height = 0; 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4c09e0deeaf31ccbd48d08744b25a1ddf37dc9af
         AvlNode(K k, V v) {
             super(k, v);
             this.height = 1;
@@ -32,6 +39,10 @@ public class RecAvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V> 
         public int getHeight() {
             return this.height;
         }        
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4c09e0deeaf31ccbd48d08744b25a1ddf37dc9af
     } //end inner class 
 */
     /** AvlTree variable. */
@@ -146,11 +157,14 @@ public class RecAvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V> 
         return this.insert(n.key, n.value, this.root);
     }
 
+<<<<<<< HEAD
     public V insert(K key, V val) {
         return this.insert(key, val, this.root);
     }
 
 
+=======
+>>>>>>> 4c09e0deeaf31ccbd48d08744b25a1ddf37dc9af
     /**
     * Recursively insert into the subtree.
     * @param key the key to insert.
@@ -281,6 +295,7 @@ public class RecAvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V> 
         return this.recDelete(key, curr).value;
     }
 
+<<<<<<< HEAD
 
 
 
@@ -318,4 +333,6 @@ public class RecAvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V> 
 
 
 
+=======
+>>>>>>> 4c09e0deeaf31ccbd48d08744b25a1ddf37dc9af
 }
