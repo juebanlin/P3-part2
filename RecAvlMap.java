@@ -9,7 +9,7 @@
  *  @param <K> key
  *  @param <V> value
  */
-public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V>  {
+public class RecAvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V>  {
 
     /*
     private class AvlNode extends BNode {
