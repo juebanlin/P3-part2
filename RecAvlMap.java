@@ -195,33 +195,69 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V>  {
     * @return deleted node
     */
     private BNode recDelete(K key, BNode curr) {
-        if (key == null || curr == null) {
-            throw new NullPointerException;
-        } else if (key.compareTo(curr.left.key) < 0) {
-            curr.left = this.recDelete(x, t.left);
-            if (this.getBalance(t) == 2) {
-                if (key < curr.left.key) {
-                    curr = this.rightRotate(curr);
+        if (root == null) {
+            return root;
+        }
+        if (key < curr.key) {
+            root.left = this.recDelete(key, curr.left);
+        } else if (key > curr.key) {
+            root.right = this.recDelete(key, curr.right);
+        } else {
+            // node with only one child or no child
+            if ((curr.left == null) || (curr.right == null)) {
+                BNode temp = null;
+                if (temp == root.left) {
+                    temp = root.right;
                 } else {
-                    curr.left = this.leftRotate(curr.left);
-                    curr = this.rightRotate(curr);
+                    temp = root.left;
                 }
-                curr.height = this.max(this.height(t.left), this.height(t.right)) + 1;
-            }
-        } else if (key.compareTo(curr.left.key) > 0) {
-            curr.right = this.insert(x, t.right);
-            if (this.getBalance(t) == -2) {
-                if (key < curr.right.key) {
-                    curr = this.leftRotate(curr);
-                } else {
-                    curr.right = this.rightRotate(curr.right);
-                    curr = this.leftRotate(curr);
+                // No child case
+                if (temp == null) {
+                    temp = root;
+                    root = null;
+                } else { // One child case
+                    curr = temp; // Copy non-empty child
                 }
-                curr.height = this.max(this.height(t.left), this.height(t.right)) + 1;
+            } else { //Two children case
+                BNode temp = curr.right; 
+                while (temp.left != null) {
+                    temp = temp.left;
+                }
+                // Copy the inorder successor's data to this node
+                curr.key = temp.key;
+                curr.value = temp.value
+                // Delete the inorder successor
+                curr.right = this.recDelete(temp.key, curr.right);
             }
         }
+        // If the tree had only one node then return
+        if (curr == null) {
+            return curr;
+        }
+        // Update height
+        root.height = this.max(this.height(curr.left), this.height(curr.right)) + 1;
+        // Get balance factor
+        int balance = this.getBalance(curr);
+        // If this node becomes unbalanced, then there are 4 cases
+        // Left Left Case
+        if (balance > 1 && this.getBalance(curr.left) >= 0) {
+            return this.rightRotate(curr);
+        }
+        // Left Right Case
+        if (balance > 1 && this.getBalance(curr.left) < 0) {
+            curr.left = this.leftRotate(curr.left);
+            return this.rightRotate(curr);
+        }
+        // Right Right Case
+        if (balance < -1 && this.getBalance(curr.right) <= 0) {
+            return this.leftRotate(curr);
+        }
+        // Right Left Case
+        if (balance < -1 && this.getBalance(curr.right) > 0) {
+            curr.right = this.rightRotate(curr.right);
+            return this.leftRotate(curr);
+        }
         return curr;
-        
     }
 
     /**
@@ -231,39 +267,7 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V>  {
     * @return value of deleted node
     */
     public V delete(K key, BNode curr) {
-        // Remove node and store value
-        V tempVal = this.remove(key, curr);
-
-        // Get new height of node
-        curr.height = this.max(this.height(curr.left), this.height(curr.right));
-
-        // Get balance factor of node
-        int balance = this.getBalance(curr);
-
-        //Left Left Case
-        if (balance > 1 && this.getBalance(curr.left) >= 0) {
-            return this.rightRotate(curr).value;
-        }
-
-        // Left Right Case
-        if (balance > 1 && this.getBalance(curr.left) < 0) {
-            curr.left = this.leftRotate(curr.left);
-            return this.rightRotate(curr).value;
-        }
- 
-        // Right Right Case
-        if (balance < -1 && this.getBalance(curr.right) <= 0) {
-            return this.leftRotate(curr).value;
-        }
- 
-        // Right Left Case
-        if (balance < -1 && this.getBalance(curr.right) > 0) {
-            curr.right = rthis.ightRotate(curr.right);
-            return this.leftRotate(curr).value;
-        }
-
-        // If tree is still balanced
-        return curr.value;
+        return this.recDelete(key, curr).value;
     }
 
 }
