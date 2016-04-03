@@ -34,7 +34,7 @@ public class RecAvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V> 
     private BNode root;  
 
     /** AvlTree constructor. */
-    public AvlMap() {
+    public RecAvlMap() {
         this.avlTree = new BSTMap<K, V>();
 
     }
@@ -148,30 +148,30 @@ public class RecAvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V> 
     * @return inserted node
     */
     private BNode recInsert(K key, V val, BNode curr) {
-        BNode n = BNode(key, value);
+        BNode n = BNode(key, val);
         if (key == null || val == null || curr == null) {
-            throw new NullPointerException;
+            throw new NullPointerException();
         } else if (key.compareTo(curr.left.key) < 0) {
-            curr.left = this.recInsert(key, val, t.left);
-            if (this.getBalance(t) == 2) {
-                if (key < curr.left.key) {
+            curr.left = this.recInsert(key, val, curr.left);
+            if (this.getBalance(curr) == 2) {
+                if (key.compareTo(curr.left.key) < 0) {
                     curr = this.rightRotate(curr);
                 } else {
                     curr.left = this.leftRotate(curr.left);
                     curr = this.rightRotate(curr);
                 }
-                curr.height = this.max(this.height(t.left), this.height(t.right)) + 1;
+                curr.height = this.max(this.height(curr.left), this.height(curr.right)) + 1;
             }
         } else if (key.compareTo(curr.left.key) > 0) {
-            curr.right = this.recInsert(key, val, t.right);
-            if (this.getBalance(t) == -2) {
-                if (key < curr.right.key) {
+            curr.right = this.recInsert(key, val, curr.right);
+            if (this.getBalance(curr) == -2) {
+                if (key.compareTo(curr.right.key) > 0) {
                     curr = this.leftRotate(curr);
                 } else {
                     curr.right = this.rightRotate(curr.right);
                     curr = this.leftRotate(curr);
                 }
-                curr.height = this.max(this.height(t.left), this.height(t.right)) + 1;
+                curr.height = this.max(this.height(curr.left), this.height(curr.right)) + 1;
             }
         }
         return curr;
@@ -195,21 +195,21 @@ public class RecAvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V> 
     * @return deleted node
     */
     private BNode recDelete(K key, BNode curr) {
-        if (root == null) {
-            return root;
+        if (curr == null || key == null) {
+            throw new NullPointerException();
         }
-        if (key < curr.key) {
-            root.left = this.recDelete(key, curr.left);
-        } else if (key > curr.key) {
-            root.right = this.recDelete(key, curr.right);
+        if (key.compareTo(curr.key) < 0) {
+            curr.left = this.recDelete(key, curr.left);
+        } else if (key.compareTo(curr.key) > 0) {
+            curr.right = this.recDelete(key, curr.right);
         } else {
             // node with only one child or no child
             if ((curr.left == null) || (curr.right == null)) {
                 BNode temp = null;
-                if (temp == root.left) {
-                    temp = root.right;
+                if (temp == curr.left) {
+                    temp = curr.right;
                 } else {
-                    temp = root.left;
+                    temp = curr.left;
                 }
                 // No child case
                 if (temp == null) {
@@ -225,7 +225,7 @@ public class RecAvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V> 
                 }
                 // Copy the inorder successor's data to this node
                 curr.key = temp.key;
-                curr.value = temp.value
+                curr.value = temp.value;
                 // Delete the inorder successor
                 curr.right = this.recDelete(temp.key, curr.right);
             }
