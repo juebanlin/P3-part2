@@ -45,8 +45,10 @@ public class BSTMap<K extends Comparable<? super K>, V>
         BNode(K k, V v) {
             this.key = k;
             this.value = v;
+            //this.left = new BNode (null, null);
+            //this.right = new BNode (null, null);
             this.left = null;
-            this.right = null;
+            this.right= null;
             this.height = 1;
         }
 
@@ -70,7 +72,7 @@ public class BSTMap<K extends Comparable<? super K>, V>
          *  @return Null.
          */
         public V setValue(V val) {
-            return null;
+            return this.value = val;
         }
         /** Dummy setValue method.
          *  @return Null.
@@ -211,7 +213,7 @@ public class BSTMap<K extends Comparable<? super K>, V>
     } //end inner class 
 
     /** The root of this tree. */
-    private BNode root;
+    protected BNode root;
     /** The number of entries in this map (== non-sentinel nodes). */
     private int size;
     /** Check if map status is changed. */
