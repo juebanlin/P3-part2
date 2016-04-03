@@ -148,7 +148,7 @@ public class RecAvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V> 
     * @return inserted node
     */
     private BNode recInsert(K key, V val, BNode curr) {
-        BNode n = BNode(key, val);
+        BNode n = new BNode(key, val);
         if (key == null || val == null || curr == null) {
             throw new NullPointerException();
         } else if (key.compareTo(curr.left.key) < 0) {
