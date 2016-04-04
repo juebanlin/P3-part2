@@ -86,6 +86,11 @@ public class BSTMap<K extends Comparable<? super K>, V>
         public K getKey() {
             return this.key;
         }
+
+
+        public K setKey(K k) {
+            return this.key = k;
+        }
         /** Dummy setValue method.
          *  @param o Some object.
          *  @return False.
@@ -513,6 +518,34 @@ public class BSTMap<K extends Comparable<? super K>, V>
         }
         return null;
     }
+
+    /**
+    * Get Balance factor of node n.
+    */
+    public int getBalance(BNode n) {
+        if (n == null || n.key == null) {
+            throw new java.lang.NullPointerException();
+        } 
+        return height(n.left) - height(n.right);
+    }
+
+        /** 
+    * Get the height of the tree.
+    * @param n the root of the subtree
+    * @return the height of the tree
+    */
+    public int height() {
+        return height(this.root);
+    }
+
+    private int height(BNode n) {
+        if (n == null) {
+            return 0;
+        }
+        return n.height;
+    }
+
+
 
 
     /** Inorder traversal that produces an iterator over key-value pairs.
