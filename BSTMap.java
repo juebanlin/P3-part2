@@ -2,7 +2,7 @@
 //Yu-chi Chang, Allan Wang
 //ychang64, awang53
 //EN.600.226.01/02
-//P3
+//P3 (for partB)
 
 
 import java.util.Collection;
@@ -35,7 +35,7 @@ public class BSTMap<K extends Comparable<? super K>, V>
         protected BNode left;
         /** The right child of this node. */
         protected BNode right;
-
+        /** The height of this node. */
         protected int height; 
 
         /** Create a new node with a particular key and value.
@@ -45,10 +45,8 @@ public class BSTMap<K extends Comparable<? super K>, V>
         BNode(K k, V v) {
             this.key = k;
             this.value = v;
-            //this.left = new BNode (null, null);
-            //this.right = new BNode (null, null);
             this.left = null;
-            this.right= null;
+            this.right = null;
             this.height = 1;
         }
 
@@ -59,47 +57,66 @@ public class BSTMap<K extends Comparable<? super K>, V>
             return this.key == null;  // this is a sentinel-based implementation
         }
 
-
+        /** set the height of the node.
+        * @param h height
+        */
         public void setHeight(int h) {
             this.height = h;
         }
+
+        /** 
+        * get the height of this node.
+        * @return height
+        */
         public int getHeight() {
             return this.height;
-        }      
+        }
 
-        /** Dummy setValue method.
-         *  @param val Value.
-         *  @return Null.
+        /** 
+         * Dummy setValue method.
+         *  @param val Value
+         *  @return null
          */
         public V setValue(V val) {
-            return this.value = val;
+            return null;
         }
-        /** Dummy setValue method.
-         *  @return Null.
+
+        /** 
+         * Dummy setValue method.
+         *  @return node's value
          */
         public V getValue() {
             return this.value;
         }
+
         /** Dummy setValue method.
-         *  @return Null.
+         *  @return key
          */
         public K getKey() {
             return this.key;
         }
 
-
+        /** 
+        * Dummy setKey method.
+        * @param k key
+        * @return null
+        */
         public K setKey(K k) {
-            return this.key = k;
+            return null;
         }
-        /** Dummy setValue method.
-         *  @param o Some object.
-         *  @return False.
+
+        /** 
+         * Dummy setValue method.
+         *  @param o Some object
+         *  @return False
          */
         public boolean equals(Object o) {
             return false;
         }
-        /** Dummy hashCode method.
-         *  @return 0.
+
+        /** 
+         * Dummy hashCode method.
+         *  @return 0
          */
         public int hashCode() {
             return 0;
@@ -220,9 +237,9 @@ public class BSTMap<K extends Comparable<? super K>, V>
     /** The root of this tree. */
     protected BNode root;
     /** The number of entries in this map (== non-sentinel nodes). */
-    private int size;
+    protected int size;
     /** Check if map status is changed. */
-    private boolean isChanged;
+    protected boolean isChanged;
 
     /** Create an empty tree with a sentinel root node.
      */
@@ -230,6 +247,7 @@ public class BSTMap<K extends Comparable<? super K>, V>
         // empty tree is a sentinel for the root
         this.root = new BNode(null, null); //root is NOT null 
         this.size = 0;
+        this.isChanged = false; 
     }
 
     /** Gets root node of tree.
@@ -266,9 +284,10 @@ public class BSTMap<K extends Comparable<? super K>, V>
     /** Clears tree. */
     @Override()
     public void clear() {
-        //this.root = new BNode(null, null);
-        this.root = null;
+        this.root = new BNode(null, null);
+        //this.root = null;
         this.size = 0;
+        this.isChanged = true;
     }
 
     /** Checks if tree is empty.
@@ -371,7 +390,7 @@ public class BSTMap<K extends Comparable<? super K>, V>
      *  @param curr the root of the subtree into which to put the entry
      *  @return the original value associated with the key, or null if not found
      */
-    public V put(K key, V val, BNode curr) {
+    private V put(K key, V val, BNode curr) {
         if (key == null) {
             throw new java.lang.NullPointerException();
         }
@@ -390,10 +409,10 @@ public class BSTMap<K extends Comparable<? super K>, V>
             return null; 
         } else { //curr !=null , curr.key != null
             this.isChanged = true; 
-            if (curr.insert(key, val) == null) {
+            if (curr.insert(key, val) == null) { 
                 this.size++;
                 return null;
-            } else {
+            } else { //key already exists 
                 return curr.insert(key, val);
             }
         }
@@ -413,13 +432,12 @@ public class BSTMap<K extends Comparable<? super K>, V>
      *  @param curr the root of the subtree from which to remove the entry
      *  @return the value associated with the removed key, or null if not found
      */
-    public V remove(K key, BNode curr) {
+    private V remove(K key, BNode curr) {
         if (curr == null || curr.key == null || key == null) {
             throw new java.lang.NullPointerException();
         }
         int diff = curr.key.compareTo(key);
         V removedValue = this.get(key, curr);
-        System.out.println(removedValue);
         if (removedValue != null) { //key-value exists
             curr = curr.remove(key); //returns updated tree
             if (this.root.key.compareTo(key) == 0) {
@@ -521,32 +539,35 @@ public class BSTMap<K extends Comparable<? super K>, V>
 
     /**
     * Get Balance factor of node n.
+    * @param n parent of the left & right child.
+    * @return balance factor
     */
     public int getBalance(BNode n) {
         if (n == null || n.key == null) {
             throw new java.lang.NullPointerException();
         } 
-        return height(n.left) - height(n.right);
+        return this.height(n.left) - this.height(n.right);
     }
 
-        /** 
+    /** 
+    * Get the height of the tree.
+    * @return the height of the tree
+    */
+    public int height() {
+        return this.height(this.root);
+    }
+
+    /**
     * Get the height of the tree.
     * @param n the root of the subtree
     * @return the height of the tree
     */
-    public int height() {
-        return height(this.root);
-    }
-
     private int height(BNode n) {
         if (n == null) {
             return 0;
         }
         return n.height;
     }
-
-
-
 
     /** Inorder traversal that produces an iterator over key-value pairs.
      *  @return an iterable list of entries ordered by keys
@@ -561,16 +582,10 @@ public class BSTMap<K extends Comparable<? super K>, V>
      */
     private Collection<Map.Entry<K, V>> inOrder(BNode curr) {
         LinkedList<Map.Entry<K, V>> ordered = new LinkedList<Map.Entry<K, V>>();
-        //tempTree = this;
-        //tempTree.root = curr;
-        if (curr.left != null) {
+        if (curr != null) {
             ordered.addAll(this.inOrder(curr.left));
-        }
-        if (curr.key != null)  {
             //ordered.addLast(curr);
             ordered.add(curr);
-        }
-        if (curr.right != null) {
             ordered.addAll(this.inOrder(curr.right));
         }
         this.isChanged = false;
@@ -678,8 +693,6 @@ public class BSTMap<K extends Comparable<? super K>, V>
             if (BSTMap.this.isChanged) {
                 throw new java.util.ConcurrentModificationException();
             }
-            System.out.println("hasNext current is " + this.current);
-            System.out.println("map size is " + BSTMap.this.size());
             return (this.current < BSTMap.this.size());
         } 
     
@@ -706,6 +719,7 @@ public class BSTMap<K extends Comparable<? super K>, V>
             return null;
         }
     }
+
 
 
 }

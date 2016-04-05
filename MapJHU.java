@@ -2,7 +2,7 @@
 //Yu-chi Chang, Allan Wang
 //ychang64, awang53
 //EN.600.226.01/02
-//P3A
+//P3 (for part B)
 
 import java.util.Map;
 import java.util.Set;

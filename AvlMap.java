@@ -1,23 +1,36 @@
+//BSTMap.java
+//Yu-chi Chang, Allan Wang
+//ychang64, awang53
+//EN.600.226.01/02
+//P3.partB
+
+
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.Set;
-import java.util.Map;
-import java.util.Iterator;
-import java.util.Spliterator;
-import java.util.function.Consumer;
-import java.util.HashSet;
-import java.util.ArrayList;
 
+/** AVL Map class.
+ * @param <K> key
+ * @param <V> value
+ */
+public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V>  {
 
-public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K,V>  {
+    /** Negative 2. */
+    private final int n2 = -2;
 
-
-
+    /** AvlTree instance. */
     private BSTMap<K, V> avlTree;
-    //private BNode root;  
 
+    /** AvlTree constructor. */
     public AvlMap() {
-        avlTree = new BSTMap<K,V> ();
+        this.avlTree = new BSTMap<K, V>();
+    }
+
+    /** 
+    * Get the height of the tree.
+    * @return the height of the tree
+    */
+    public int height() {
+        return this.height(this.root);
     }
 
     /** 
@@ -25,10 +38,6 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K,V>  {
     * @param n the root of the subtree
     * @return the height of the tree
     */
-    public int height() {
-        return height(this.root);
-    }
-
     private int height(BNode n) {
         if (n == null) {
             return 0;
@@ -37,8 +46,11 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K,V>  {
     }
 
     /**
-    * Get maxium of of two integers. 
-    */
+     * Get maxium of of two integers. 
+     * @param a first integer
+     * @param b second integer
+     * @return maximum integer
+     */
     public int max(int a, int b) {
         if (a > b) {
             return a;
@@ -48,244 +60,222 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K,V>  {
     }
 
     /**
-    * Get Balance factor of node n.
-    */
+     * Get Balance factor of node n.
+     * @param n given node
+     * @return balance factor
+     */
     public int getBalance(BNode n) {
-        if (n == null || n.key == null) {
-            throw new java.lang.NullPointerException();
-        } 
-        return height(n.left) - height(n.right);
+        return this.height(n.left) - this.height(n.right);
     }
 
     /**
-    * Perform right rotation.
-    * @param r the root of the subtree
-    */ 
-    // y <--> r;   x <--> n;
-    // A utility function to right rotate subtree rooted with y
-    // See the diagram given above.
-    public BNode rightRotate(BNode r) {
-        //BNode n= r.left;
-        //BNode temp = n.right;
-
-        BNode n= r.left;
-        BNode temp = n.right;
- 
-        // Perform rotation
-        n.right = r;
-        r.left = temp;
- 
-        // Update heights
-        r.height = max(height(r.left), height(r.right)) + 1;
-        n.height = max(height(n.left), height(n.right)) + 1;
- 
-        // Return new root
-        return n;
+     * Insert into the tree; duplicates are ignored.
+     * @param key the key to insert.
+     * @param val the value to insert
+     * @return true if successful, false if key is null
+     */
+    public boolean add(K key, V val) {
+        if (key != null) {
+            this.root = this.insert(key, val, this.root);
+            return true;
+        }
+        return false;
     }
 
     /**
-    * Perform left rotation.
-    * @param r the root of the subtree
-    */ 
-    // x <--> r;   y <--> n;
-    // A utility function to left rotate subtree rooted with x
-    // See the diagram given above.
-    public BNode leftRotate(BNode r) {
-        BNode n = r.right;
-        BNode temp = n.left;
- 
-        // Perform rotation
-        n.left = r;
-        r.right = temp;
- 
-        //  Update heights
-        n.height = max(height(r.left), height(r.right)) + 1;
-        n.height = max(height(n.left), height(n.right)) + 1;
- 
-        // Return new root
-        return n;
+     * Insert into the tree; duplicates are ignored.
+     * If key already exists, update the value of the key.
+     * @param key the key to insert
+     * @param val the vale to insert
+     * @param curr subtree to insert into
+     * @return true if successful, false if key is null
+     */
+    private boolean add(K key, V val, BNode curr) {
+        if (key != null) {
+            this.root = this.insert(key, val, curr);
+            return true;
+        }
+        return false;
     }
 
     /**
-    * Insert into the tree; duplicates are ignored.
-    * @param x the item to insert.
-    */
-    public BNode insert(K key, V val) {
-         return this.insert(key, val, this.root);
-    }
-      // node <--> curr
-
-
-    /*
-how would you insert(key, val, curr)
-
-    */
-
-/*
-    public BNode insert(K key, V val, BNode curr) {
-        //call BST insert
-        //V tempVal = super.put(key, val, curr); 
-
-        BNode temp = null;
-
-        this.put(key, val, curr);
-        System.out.println("curr should be 1 " + curr.key);
-
-        curr.height = max(height(curr.left), height(curr.right)) +1 ;
-        System.out.println("curr.height is: " + curr.height);
-
-        // Get balance
-        int balance = getBalance(curr);
-        System.out.println("balance :" + balance);
-        // balance > 1 (left heavy)
-        // balance < -1 (right heavy)
-
-        // If unbalanced, check 4 cases
-        // Left Left Case
-        if (balance > 1 && key.compareTo(curr.left.key) < 0) {
-            System.out.println("LL Case");
-            return this.rightRotate(curr);
-        }
- 
-        // Right Right Case
-        if (balance < -1 && key.compareTo(curr.right.key) > 0) {
-            System.out.println("RR Case");
-            return this.leftRotate(curr);
-        }
- 
-        // Left Right Case
-        if (balance > 1 && key.compareTo(curr.left.key) > 0) {
-            curr.left = leftRotate(curr.left);
-            System.out.println("LR Case");
-            return this.rightRotate(curr);
-        }
- 
-        // Right Left Case
-        if (balance < -1 && key.compareTo(curr.right.key) < 0 ) {
-            curr.right = rightRotate(curr.right);
-            System.out.println("RL Case");
-            return this.leftRotate(curr);
+     * Helper method for add.
+     * If key already exists, update the value of the key.
+     * @param key the key to insert
+     * @param val the vale to insert
+     * @param curr root of the subtree to insert into
+     * @return inserted node
+     */
+    private BNode insert(K key, V val, BNode curr) {
+        BNode temp = curr;
+        if (temp == null) {
+            temp = new BNode(key, val);
+            this.size++;
+            this.isChanged = true; 
+            return temp;
+        } else if (temp.key == null) { 
+            this.root.key = key;
+            this.root.value = val;
+            this.size++;
+            this.isChanged = true; 
+            return temp; 
+        } else if (key.compareTo(temp.key) < 0) {
+            temp.left = this.insert(key, val, temp.left);
+            temp = this.balance(temp);
+        } else if (key.compareTo(temp.key) > 0) {
+            temp.right = this.insert(key, val, temp.right);
+            temp = this.balance(temp);
+        } else { //update curr's value
+            curr.value = val; 
+            this.isChanged = true; 
         }
         return temp;
     }
 
 
-    */
-
-    public BNode insert(K key, V val, BNode curr) {
-
-        BNode temp;
-
-        if (curr == null) {
-            curr = new BNode(key, val);
-            temp = curr;
-            //System.out.println("insert: " + curr);
-            return curr;
-        } else if (curr.key == null) { 
-            //initial root has null key null value, but root is not null
-            this.root.setKey(key);
-            this.root.setValue(val);
-            curr = this.root;
-            return curr; 
+    /** Put <key,value> entry into tree.
+     *  @param key the key of the entry
+     *  @param val the value of the entry
+     *  @return the original value associated with the key, or null if not found
+     */
+    @Override()
+    public V put(K key, V val) {
+        V old = null;
+        if (this.hasKey(key)) {
+            old = this.get(key);
         }
-        int diff = key.compareTo(curr.key);
-
-        //System.out.println("curr.key is : " + curr.key + " curr.height is" + curr.height);
-        int balance = getBalance(curr);
-        System.out.println("balance is " + balance);
-
-
-        if (diff < 0 ) { //insert left
-            System.out.println("diff is < 0");
-            curr.left = insert(key, val, curr.left);
-            curr.height = max( height( curr.left ), height( curr.right ) ) + 1;
-            if (balance == 2 ) { //left heavy 
-                if (key.compareTo(curr.left.key) < 0) { //LLcase
-                   System.out.println("enter left rotation");
-                    curr = rotateWithLeftChild(curr);
-                    this.root = curr;
-                } else {
-                   System.out.println("enter double left rotation");
-                    curr = doubleWithLeftChild(curr);
-                    this.root = curr;
-                }
-            }
-        } else if (diff > 0) {
-            curr.right = insert(key, val, curr.right);
-            curr.height = max( height( curr.left ), height( curr.right ) ) + 1;
-
-            if (balance == -2) {
-                if (key.compareTo(curr.right.key) > 0) {
-                    System.out.println("enter right rotation");
-                    curr = rotateWithRightChild(curr);                 
-                    this.root = curr; 
-                } else {
-                    System.out.println("enter double right rotation");
-                    curr = doubleWithRightChild(curr);                    
-                    this.root = curr;       
-                }
-            }
-        } else { //update curr's value
-            curr.setValue(val);
-        }
-        return curr;
+        this.root = this.insert(key, val, this.root);
+        return old;
     }
 
-    public V delete(K key, BNode curr) {
-        // Check if given key or root is null
-        if (curr == null || key == null) {
-            throw new java.lang.NullPointerException();
+    /**
+     * AVL balancing.
+     * @param curr node to balance
+     * @return balanced tree
+     */
+    private BNode balance(BNode curr) {
+        BNode temp = curr;
+        int bf = this.getBalance(temp);
+        if (bf == 2) {
+            int subLeft = this.getBalance(temp.left);
+            if (subLeft > 0) {
+                temp = this.rotateRight(temp);
+            } else {
+                temp = this.rotateLeftRight(temp);
+            }
+        } else if (bf == this.n2) {
+            int subRight = this.getBalance(temp.right);
+            if (subRight < 0) {
+                temp = this.rotateLeft(temp);
+            } else {
+                temp = this.rotateRightLeft(temp);
+            }
         }
-
-        // Remove node and store value
-        V tempVal = this.remove(key, curr);
-
-        // Return null if key not found
-        if (tempVal == null) {
-            return null;
-        }
-
-        // Get new height of node
-        curr.height = max(height(curr.left), height(curr.right));
-
-        // Get balance factor of node
-        int balance = getBalance(curr);
-
-        //Left Left Case
-        if (balance > 1 && getBalance(curr.left) >= 0) {
-            return rightRotate(curr).value;
-        }
-
-        // Left Right Case
-        if (balance > 1 && getBalance(curr.left) < 0) {
-            curr.left = leftRotate(curr.left);
-            return rightRotate(curr).value;
-        }
- 
-        // Right Right Case
-        if (balance < -1 && getBalance(curr.right) <= 0) {
-            return leftRotate(curr).value;
-        }
- 
-        // Right Left Case
-        if (balance < -1 && getBalance(curr.right) > 0) {
-            curr.right = rightRotate(curr.right);
-            return leftRotate(curr).value;
-        }
-
-        // If tree is still balanced
-        return curr.value;
+        temp.height = this.max(this.height(temp.left),
+            this.height(temp.right)) + 1;
+        return temp;
     }
 
 
+    /**
+     * Remove a key-value from the tree.
+     * @param key the key to remove
+     * @return true if removed, false if not found
+     */
+    public boolean delete(K key) {
+        if (this.hasKey(key)) {
+            this.root = this.delete(this.root, key);
+            this.size--;
+            this.isChanged = true;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Helper method for delete.
+     * @param key the value to delete
+     * @param curr the root of the subtree to look in
+     * @return the new subtree after rebalancing
+     */
+    private BNode delete(BNode curr, K key) {
+        BNode temp = curr;
+        if (temp == null) {
+            return temp;
+        }
+        if (key.compareTo(temp.key) < 0) {
+            temp.left = this.delete(temp.left, key);
+        } else if (key.compareTo(temp.key) > 0) {  // val >= temp
+            temp.right = this.delete(temp.right, key);
+        } else { //key == temp.key
+            if (temp.left == null && temp.right == null) {
+                temp = null;
+                return temp;
+            } else if (temp.right != null && temp.left != null) {
+                K tempKey = this.findMin(temp.right).key;
+                V tempVal = this.findMin(temp.right).value;
+                temp.key = tempKey;
+                temp.value = tempVal;
+                temp.right = this.delete(temp.right, temp.key);
+            } else if (temp.right == null) {
+                temp = temp.left;
+            } else if (temp.left == null) {
+                temp = temp.right;
+            }
+        }
+        temp = this.balance(temp);
+        return temp;
+    }
+
+
+    /** Remove entry with specified key from tree.
+     *  @param key the key of the entry to remove, if there
+     *  @return the value associated with the removed key, or null if not found
+     */
+    @Override()
+    public V remove(K key) {
+        V old = null;
+        if (this.hasKey(key)) {
+            old = get(key);
+            this.root = this.delete(this.root, key);
+            this.size--;
+            this.isChanged = true;
+        }
+        return old;
+    }
+
+    /**
+     * Find smallest key in the subtree with curr root.
+     * @param curr the root of the tree
+     * @return the minimum node
+     */
+    private BNode findMin(BNode curr) {
+        BNode temp = curr;
+        if (temp == null) {
+            return temp;
+        }
+        while (temp.left != null) {
+            temp = temp.left;
+        }
+        return temp;
+    }
+
+    /**
+     * Return a pre-ordered list of keys.
+     * @return preorder list
+     */
     public Collection<K> preOrder() {
         return this.preOrder(this.root);
     }
 
+    /**
+     * Return a pre-ordered list of keys.
+     * @param curr the root of the tree
+     * @return preorder list
+     */
     public Collection<K> preOrder(BNode curr) {
         LinkedList<K> set = new LinkedList<K>(); 
-        if (curr == null) {
-        } else {
+        if (curr != null) {
             set.addFirst(curr.key);
             set.addAll(this.preOrder(curr.left));
             set.addAll(this.preOrder(curr.right));
@@ -293,15 +283,22 @@ how would you insert(key, val, curr)
         return set;
     }
 
+    /**
+     * Return a post-ordered list of keys.
+     * @return postorder list
+     */
     public Collection<K> postOrder() {
         return this.postOrder(this.root);
     }
 
-
+    /**
+     * Return a post-ordered list of keys.
+     * @param curr the root of the tree
+     * @return postorder list
+     */
     public Collection<K> postOrder(BNode curr) {
         LinkedList<K> set = new LinkedList<K>(); 
-        if (curr == null) {
-        } else {
+        if (curr != null) {
             set.addAll(this.postOrder(curr.left));
             set.addAll(this.postOrder(curr.right));
             set.addLast(curr.key);
@@ -309,69 +306,53 @@ how would you insert(key, val, curr)
         return set;
     }
 
-        /**
-         * Rotate binary tree node with left child.
-         * For AVL trees, this is a single rotation for case 1.
-         * Update heights, then return new root.
-         */
-        private BNode rotateWithLeftChild( BNode k2 )
-        {
-            BNode k1 = k2.left;
-            k2.left = k1.right;
-            k1.right = k2;
-            k2.height = max( height( k2.left ), height( k2.right ) ) + 1;
-            k1.height = max( height( k1.left ), k2.height ) + 1;
-            return k1;
-        }
+    /**
+     * Rotate binary tree node with left child.
+     * @param k2 node to rotate
+     * @return rotated node
+     */
+    private BNode rotateRight(BNode k2) {
+        BNode k1 = k2.left;
+        k2.left = k1.right;
+        k1.right = k2;
+        k2.height = this.max(this.height(k2.left), this.height(k2.right)) + 1;
+        k1.height = this.max(this.height(k1.left), k2.height) + 1;
+        return k1;
+    }
 
-        /**
-         * Rotate binary tree node with right child.
-         * For AVL trees, this is a single rotation for case 4.
-         * Update heights, then return new root.
-         */
-        private BNode rotateWithRightChild( BNode k1 ){
-            if (k1 == null) {
-                return null;
-            }
-            BNode k2 = k1.right;
-            if (k2 != null) {
-            k1.right = k2.left;
-            k2.left = k1;
-            k1.height = max( height( k1.left ), height( k1.right ) ) + 1;
-            k2.height = max( height( k2.right ), k1.height ) + 1;
-            }
-            return k2;
-        }
+    /**
+     * Rotate binary tree node with right child.
+     * @param k1 node to rotate
+     * @return rotated node
+     */
+    private BNode rotateLeft(BNode k1) {
+        BNode k2 = k1.right;
+        k1.right = k2.left;
+        k2.left = k1;
+        k1.height = this.max(this.height(k1.left), this.height(k1.right)) + 1;
+        k2.height = this.max(this.height(k2.right), k1.height) + 1;
+        return k2;
+    }
 
-        /**
-         * Double rotate binary tree node: first left child
-         * with its right child; then node k3 with new left child.
-         * For AVL trees, this is a double rotation for case 2.
-         * Update heights, then return new root.
-         */
-        private BNode doubleWithLeftChild( BNode k3 ){
-            if (k3 != null) {
-                k3.left = rotateWithRightChild( k3.left );
-                return this.rotateWithLeftChild( k3 );
-            }
-            return k3;
-        }
+    /**
+     * Double rotate binary tree node: first left child
+     * with its right child; then node k3 with new left child.
+     * @param k3 node to rotate
+     * @return rotated node
+     */
+    private BNode rotateLeftRight(BNode k3) {
+        k3.left = this.rotateLeft(k3.left);
+        return this.rotateRight(k3);
+    }
 
-        /**
-         * Double rotate binary tree node: first right child
-         * with its left child; then node k1 with new right child.
-         * For AVL trees, this is a double rotation for case 3.
-         * Update heights, then return new root.
-         */
-        private BNode doubleWithRightChild( BNode k1 ){
-            if (k1 != null) {
-            k1.right = rotateWithLeftChild( k1.right );
-            return this.rotateWithRightChild( k1 );
-            }
-            return k1;
-        }
-
-
-
-
+    /**
+     * Double rotate binary tree node: first right child
+     * with its left child; then node k1 with new right child.
+     * @param k1 node to rotate
+     * @return rotated node
+     */
+    private BNode rotateRightLeft(BNode k1) {
+        k1.right = this.rotateRight(k1.right);
+        return this.rotateLeft(k1);
+    }
 }
