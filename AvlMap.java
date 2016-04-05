@@ -111,13 +111,15 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V>  {
         if (temp == null) {
             temp = new BNode(key, val);
             this.size++;
-            this.isChanged = true; 
+            this.isChanged = true;
+            //this.state++;
             return temp;
         } else if (temp.key == null) { 
             this.root.key = key;
             this.root.value = val;
             this.size++;
-            this.isChanged = true; 
+            this.isChanged = true;
+            //this.state++; 
             return temp; 
         } else if (key.compareTo(temp.key) < 0) {
             temp.left = this.insert(key, val, temp.left);
@@ -126,7 +128,8 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V>  {
             temp.right = this.insert(key, val, temp.right);
             temp = this.balance(temp);
         } else { //update curr's value
-            curr.value = val; 
+            curr.value = val;
+            //this.state++; 
             this.isChanged = true; 
         }
         return temp;
@@ -186,6 +189,7 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V>  {
         if (this.hasKey(key)) {
             this.root = this.delete(this.root, key);
             this.size--;
+            ////this.state++;
             this.isChanged = true;
             return true;
         }
@@ -239,6 +243,7 @@ public class AvlMap<K extends Comparable<? super K>, V> extends BSTMap<K, V>  {
             old = get(key);
             this.root = this.delete(this.root, key);
             this.size--;
+            //this.state++;
             this.isChanged = true;
         }
         return old;

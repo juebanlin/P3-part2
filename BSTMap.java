@@ -665,40 +665,30 @@ public class BSTMap<K extends Comparable<? super K>, V>
 
     /** Inner class of BSTMap. 
     */
-    private final class BSTMapIterator implements Iterator<Map.Entry<K, V>> {
+    private class BSTMapIterator implements Iterator<Map.Entry<K, V>> {
         /** Initialize iterator variable. */
         private Iterator<Map.Entry<K, V>> inOrderIter; 
         /** Counter for iterator. */
-        private int current; 
+        //private int current; 
+        
         /** Constructor. */
-        private BSTMapIterator() {
-            this.current = 0;
+        BSTMapIterator() {
+            //this.current = 0;
             this.inOrderIter = BSTMap.this.inOrder().iterator();
         }
-        /** 
-        * Constructor that iterates through a subtree with root node curr. 
-        * @param curr root node curr
-        */
-        private BSTMapIterator(BNode curr) {
-            this.current = 0;
-            this.inOrderIter = BSTMap.this.inOrder(curr).iterator();
-        }
-
        /**
        * Check if there's still elements left to traverse. 
        * @return false if at the end of the underlying array
        */
-        @Override
         public boolean hasNext() {
             if (BSTMap.this.isChanged) {
                 throw new java.util.ConcurrentModificationException();
             }
-            return (this.current < BSTMap.this.size());
+            //return (this.current < BSTMap.this.size());
+            return this.inOrderIter.hasNext();
         } 
     
         /** Remove function for BSTMap iterator. */
-    
-        @Override
         public void remove() {
             // optional to implement
         }
@@ -706,17 +696,16 @@ public class BSTMap<K extends Comparable<? super K>, V>
         /** Next function for BSTMap iterator.
          *  @return Next map entry in the map.
          */
-    
-        @Override
         public Map.Entry<K, V> next() { //or BNode ??
             if (BSTMap.this.isChanged) {
                 throw new java.util.ConcurrentModificationException();
             }
-            if (this.hasNext()) {
-                this.current++;
-                return this.inOrderIter.next();
-            }
-            return null;
+            return this.inOrderIter.next();
+            //if (this.hasNext()) {
+            //    this.current++;
+            //    return this.inOrderIter.next();
+            //}
+            //return null;
         }
     }
 
